@@ -4,7 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 
 /**
- * 
+ * DataSet ライブラリの設定を行います。
  * 
  * @author GLAD!!
  */

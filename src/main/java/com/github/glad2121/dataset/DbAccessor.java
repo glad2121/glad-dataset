@@ -3,7 +3,7 @@ package com.github.glad2121.dataset;
 import java.sql.Connection;
 
 /**
- * 
+ * データベースに対するアクセッサです。
  * 
  * @author GLAD!!
  */

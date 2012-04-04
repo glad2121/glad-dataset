@@ -5,7 +5,7 @@ import java.util.Properties;
 import com.github.glad2121.dataset.util.JavaUtils;
 
 /**
- * 
+ * ${@link DataSetConfig} のファクトリです。
  * 
  * @author GLAD!!
  */

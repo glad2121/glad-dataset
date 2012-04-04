@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import com.github.glad2121.dataset.resource.Resource;
 
 /**
- * 
+ * ファイルに対するアクセッサです。
  * 
  * @author GLAD!!
  */

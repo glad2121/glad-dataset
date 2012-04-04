@@ -7,7 +7,7 @@ import java.sql.Statement;
 import com.github.glad2121.dataset.util.JdbcUtils;
 
 /**
- * 
+ * {@link DbAccessor} の実装のベースとなる抽象クラスです。
  * 
  * @author GLAD!!
  */

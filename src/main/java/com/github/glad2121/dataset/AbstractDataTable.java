@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.github.glad2121.dataset.util.DataSetUtils;
 
 /**
- * 
+ * {@link DataTable} の実装のベースとなる抽象クラスです。
  * 
  * @author GLAD!!
  */

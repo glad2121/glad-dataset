@@ -11,7 +11,7 @@ import com.github.glad2121.dataset.resource.Resource;
 import com.github.glad2121.dataset.resource.ResourceNotFoundException;
 
 /**
- * 
+ * {@link DataSet} に対する処理を支援するクラスです。
  * 
  * @author GLAD!!
  */
@@ -71,26 +71,60 @@ public class DataSetHelper {
         return outputDir;
     }
 
+    /**
+     * 指定されたテーブルを読み込んで、{@link DataSet} を生成します。
+     * 
+     * @param tableNames テーブル名
+     * @return {@link DataSet}
+     */
     public DataSet readDb(String... tableNames) {
         return getDbAccessor().read(tableNames);
     }
 
+    /**
+     * 期待値データと DB の状態を比較・検証します。
+     * 
+     * @param expected 期待値データのリソース
+     */
     public void assertDb(Resource expected) {
         DataSet dataSet = readFile(expected);
         DataSet actual = readDb(dataSet.getTableNames());
         getAsserter().assertEquals(dataSet, actual);
     }
 
+    /**
+     * 期待値データと DB の状態を比較・検証します。
+     * <P>
+     * 期待値データが存在しない場合は、DB の状態に基づいてデータ雛型を生成します。
+     * 
+     * @param expected 期待値データのリソース
+     * @param tableNames 期待値データが保持するテーブル名
+     */
     public void assertDb(Resource expected, String... tableNames) {
         DataSet dataSet = readFile(expected, tableNames);
         DataSet actual = readDb(dataSet.getTableNames());
         getAsserter().assertEquals(dataSet, actual);
     }
 
+    /**
+     * 指定されたデータファイルを読み込んで、{@link DataSet} を生成します。
+     * 
+     * @param resource データファイルのリソース
+     * @return {@link DataSet}
+     */
     public DataSet readFile(Resource resource) {
         return getFileAccessor().read(resource);
     }
 
+    /**
+     * 指定されたデータファイルを読み込んで、{@link DataSet} を生成します。
+     * <P>
+     * データファイルが存在しない場合は、DB の状態に基づいてデータ雛型を生成します。
+     * 
+     * @param resource データファイルのリソース
+     * @param tableNames データファイルが保持するテーブル名
+     * @return {@link DataSet}
+     */
     public DataSet readFile(Resource resource, String... tableNames) {
         try {
             return readFile(resource);
@@ -104,6 +138,12 @@ public class DataSetHelper {
         }
     }
 
+    /**
+     * 指定されたデータファイルに {@link DataSet} を書き込みます
+     * 
+     * @param resource データファイルのリソース
+     * @param dataSet {@link DataSet}
+     */
     public void writeFile(Resource resource, DataSet dataSet) {
         getFileAccessor().write(resource, dataSet);
     }

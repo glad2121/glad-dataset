@@ -1,7 +1,7 @@
 package com.github.glad2121.dataset;
 
 /**
- * 
+ * DataSet ライブラリで発生する例外です。
  * 
  * @author GLAD!!
  */

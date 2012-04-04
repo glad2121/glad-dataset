@@ -38,9 +38,9 @@ public class JdbcBasedDBTestCaseTest extends JdbcBasedDBTestCase {
         "T_USER_ROLE"
     };
 
-    static final String INPUT_DIR = "src/test/input";
+    static final String INPUT_DIR = "src/test/data";
 
-    static final String OUTPUT_DIR = "target/test/output";
+    static final String OUTPUT_DIR = "target/test/data";
 
     static final Logger logger =
             LoggerFactory.getLogger(JdbcBasedDBTestCaseTest.class);

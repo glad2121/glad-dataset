@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * 
+ * {@link DataSet} の実装のベースとなる抽象クラスです。
  * 
  * @author GLAD!!
  */

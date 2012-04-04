@@ -8,7 +8,7 @@ import java.util.Properties;
 import com.github.glad2121.dataset.util.JavaUtils;
 
 /**
- * 
+ * {@link DataSetConfig} の実装のベースとなる抽象クラスです。
  * 
  * @author GLAD!!
  */
@@ -77,7 +77,7 @@ public class AbstractDataSetConfig implements DataSetConfig {
         if (hasProperty(INPUT_DIR_KEY)) {
             return new File(getProperty(INPUT_DIR_KEY));
         } else {
-            return new File("src/test/input");
+            return new File("src/test/data");
         }
     }
 
@@ -85,7 +85,7 @@ public class AbstractDataSetConfig implements DataSetConfig {
         if (hasProperty(OUTPUT_DIR_KEY)) {
             return new File(getProperty(OUTPUT_DIR_KEY));
         } else {
-            return new File("target/test/output");
+            return new File("target/test/data");
         }
     }
 

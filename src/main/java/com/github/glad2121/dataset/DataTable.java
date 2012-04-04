@@ -1,7 +1,7 @@
 package com.github.glad2121.dataset;
 
 /**
- * 
+ * 表形式のデータです。
  * 
  * @author GLAD!!
  */

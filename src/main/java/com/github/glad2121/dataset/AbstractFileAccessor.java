@@ -7,7 +7,7 @@ import com.github.glad2121.dataset.resource.Resource;
 import com.github.glad2121.dataset.util.IOUtils;
 
 /**
- * 
+ * {@link FileAccessor} の実装のベースとなる抽象クラスです。
  * 
  * @author GLAD!!
  */
