@@ -35,7 +35,6 @@
 
   <!-- Build Settings -->
   <build>
-    <finalName>${project.artifactId</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
