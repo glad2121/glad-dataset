@@ -81,15 +81,17 @@ public class DataSetHelper {
         return getDbAccessor().read(tableNames);
     }
 
-    /**
-     * 期待値データと DB の状態を比較・検証します。
-     * 
-     * @param expected 期待値データのリソース
-     */
-    public void assertDb(Resource expected) {
-        DataSet dataSet = readFile(expected);
-        DataSet actual = readDb(dataSet.getTableNames());
-        getAsserter().assertEquals(dataSet, actual);
+    public void cleanInsert(Resource resource, String... tableNames) {
+        DataSet dataSet = readFile(resource, tableNames);
+        getDbAccessor().cleanInsert(dataSet);
+    }
+
+    public void insert(DataSet dataSet) {
+        getDbAccessor().insert(dataSet);
+    }
+
+    public void update(DataSet dataSet) {
+        getDbAccessor().update(dataSet);
     }
 
     /**
@@ -103,7 +105,11 @@ public class DataSetHelper {
     public void assertDb(Resource expected, String... tableNames) {
         DataSet dataSet = readFile(expected, tableNames);
         DataSet actual = readDb(dataSet.getTableNames());
-        getAsserter().assertEquals(dataSet, actual);
+        assertEquals(dataSet, actual);
+    }
+
+    public void assertEquals(DataSet expected, DataSet actual) {
+        getAsserter().assertEquals(expected, actual);
     }
 
     /**
@@ -129,10 +135,12 @@ public class DataSetHelper {
         try {
             return readFile(resource);
         } catch (ResourceNotFoundException e) {
-            try {
-                writeFile(getInputResource(resource), readDb(tableNames));
-            } catch (Exception e2) {
-                logger.warn(e2.toString());
+            if (tableNames.length > 0) {
+                try {
+                    writeFile(getInputResource(resource), readDb(tableNames));
+                } catch (Exception e2) {
+                    logger.warn(e2.toString());
+                }
             }
             throw e;
         }
