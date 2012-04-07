@@ -13,6 +13,7 @@ public class DbUnitDataSetAsserterExt extends DbUnitDataSetAsserter {
         return super.skipCompare(columnName, expectedValue, actualValue);
     }
 
+    // 最後に定義すること。
     public static final DbUnitDataSetAsserterExt INSTANCE =
             new DbUnitDataSetAsserterExt();
 

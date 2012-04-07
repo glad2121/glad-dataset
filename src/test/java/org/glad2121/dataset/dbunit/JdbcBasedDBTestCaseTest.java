@@ -1,10 +1,5 @@
 package org.glad2121.dataset.dbunit;
 
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.Statement;
-
-import org.apache.commons.io.IOUtils;
 import org.dbunit.JdbcBasedDBTestCase;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
@@ -14,15 +9,12 @@ import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.glad2121.dataset.DataSet;
 import org.glad2121.dataset.DataTable;
 import org.glad2121.dataset.DbAccessor;
+import org.glad2121.dataset.DbInitializer;
 import org.glad2121.dataset.FileAccessor;
-import org.glad2121.dataset.dbunit.DbUnitDataSet;
-import org.glad2121.dataset.dbunit.DbUnitDbAccessor;
-import org.glad2121.dataset.dbunit.DbUnitXlsAccessor;
 import org.glad2121.dataset.resource.FileResource;
 import org.glad2121.dataset.resource.Resource;
 import org.glad2121.dataset.util.DataSetUtils;
 import org.glad2121.dataset.util.JavaUtils;
-import org.glad2121.dataset.util.JdbcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +39,6 @@ public class JdbcBasedDBTestCaseTest extends JdbcBasedDBTestCase {
     static final Logger logger =
             LoggerFactory.getLogger(JdbcBasedDBTestCaseTest.class);
 
-    static boolean initialized = false;
-
     DbAccessor dbAccessor;
 
     FileAccessor fileAccessor;
@@ -56,9 +46,7 @@ public class JdbcBasedDBTestCaseTest extends JdbcBasedDBTestCase {
     IDataSet dataSet;
 
     protected void setUp() throws Exception {
-        if (!initialized) {
-            init();
-        }
+        new DbInitializer().init();
         dbAccessor = new DbUnitDbAccessor(getConnection());
         fileAccessor = new DbUnitXlsAccessor();
         dataSet = DbUnitDataSet.cast(
@@ -71,21 +59,6 @@ public class JdbcBasedDBTestCaseTest extends JdbcBasedDBTestCase {
         dataSet = null;
         fileAccessor = null;
         dbAccessor = null;
-    }
-
-    void init() throws Exception {
-        logger.debug("initilizing...");
-        InputStream in = getClass().getResourceAsStream("../setup.sql");
-        String sql = IOUtils.toString(in, "UTF-8");
-        IOUtils.closeQuietly(in);
-        Connection con = getConnection().getConnection();
-        Statement stmt = con.createStatement();
-        try {
-            stmt.executeUpdate(sql);
-        } finally {
-            JdbcUtils.closeQuietly(stmt);
-        }
-        initialized = true;
     }
 
     @Override
@@ -101,7 +74,7 @@ public class JdbcBasedDBTestCaseTest extends JdbcBasedDBTestCase {
 
     protected String getConnectionUrl() {
         //return "jdbc:h2:mem:";
-        return "jdbc:h2:~/.h2/dataset/test";
+        return "jdbc:h2:~/.h2/dataset/test;AUTO_SERVER=TRUE";
     }
 
     @Override
@@ -136,8 +109,8 @@ public class JdbcBasedDBTestCaseTest extends JdbcBasedDBTestCase {
 
     public void testAssert() {
         dbAccessor.execute(
-            "update T_USER_ROLE set" +
-            "  UPDATED_BY = current_user()," +
+            "update T_USER_ROLE set\n" +
+            "  UPDATED_BY = current_user(),\n" +
             "  UPDATED    = current_timestamp()");
         
         DataSet expected = fileAccessor.read(getExpectedResource());

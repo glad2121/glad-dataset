@@ -58,11 +58,12 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
         Properties p = new Properties();
         for (Map.Entry<?, ?> entry : props.entrySet()) {
             String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
             if (key.startsWith(DBUNIT_PREFIX)) {
-                key = key.substring(DBUNIT_PREFIX.length());
+                String dbunitKey = key.substring(DBUNIT_PREFIX.length());
+                String value = (String) entry.getValue();
+                p.setProperty(dbunitKey, value);
+                logger.debug("{} = {}", key, value);
             }
-            p.setProperty(key, value);
         }
         try {
             config.setPropertiesByString(p);
@@ -76,6 +77,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public DataSet read(String... tableNames) {
+        logger.debug("read: {}", tableNames);
         try {
             return new DbUnitDataSet(
                     getDatabaseConnection().createDataSet(tableNames));
@@ -85,6 +87,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void cleanInsert(DataSet dataSet) {
+        logger.debug("cleanInsert: {}", dataSet);
         try {
             DatabaseOperation.CLEAN_INSERT.execute(
                     getDatabaseConnection(),
@@ -95,6 +98,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void insert(DataSet dataSet) {
+        logger.debug("insert: {}", dataSet);
         try {
             DatabaseOperation.INSERT.execute(
                     getDatabaseConnection(),
@@ -105,6 +109,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void update(DataSet dataSet) {
+        logger.debug("update: {}", dataSet);
         try {
             DatabaseOperation.UPDATE.execute(
                     getDatabaseConnection(),
@@ -115,6 +120,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void merge(DataSet dataSet) {
+        logger.debug("merge: {}", dataSet);
         try {
             DatabaseOperation.REFRESH.execute(
                     getDatabaseConnection(),
@@ -125,6 +131,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void delete(DataSet dataSet) {
+        logger.debug("delete: {}", dataSet);
         try {
             DatabaseOperation.DELETE.execute(
                     getDatabaseConnection(),
@@ -135,6 +142,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void deleteAll(DataSet dataSet) {
+        logger.debug("deleteAll: {}", dataSet);
         try {
             DatabaseOperation.DELETE_ALL.execute(
                     getDatabaseConnection(),
@@ -145,6 +153,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public void truncate(DataSet dataSet) {
+        logger.debug("truncate: {}", dataSet);
         try {
             DatabaseOperation.TRUNCATE_TABLE.execute(
                     getDatabaseConnection(),

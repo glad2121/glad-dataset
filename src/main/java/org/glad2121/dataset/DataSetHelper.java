@@ -93,6 +93,26 @@ public class DataSetHelper {
         getDbAccessor().update(dataSet);
     }
 
+    public void merge(DataSet dataSet) {
+        getDbAccessor().merge(dataSet);
+    }
+
+    public void delete(DataSet dataSet) {
+        getDbAccessor().delete(dataSet);
+    }
+
+    public void deleteAll(DataSet dataSet) {
+        getDbAccessor().deleteAll(dataSet);
+    }
+
+    public void truncate(DataSet dataSet) {
+        getDbAccessor().truncate(dataSet);
+    }
+
+    public void executeSql(String sql) {
+        getDbAccessor().execute(sql);
+    }
+
     /**
      * 期待値データと DB の状態を比較・検証します。
      * <P>
