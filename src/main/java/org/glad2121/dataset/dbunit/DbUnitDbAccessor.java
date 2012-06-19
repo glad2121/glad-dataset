@@ -77,7 +77,7 @@ public class DbUnitDbAccessor extends AbstractDbAccessor {
     }
 
     public DataSet read(String... tableNames) {
-        logger.debug("read: {}", tableNames);
+        logger.debug("read: {}", (Object) tableNames);
         try {
             return new DbUnitDataSet(
                     getDatabaseConnection().createDataSet(tableNames));
