@@ -20,4 +20,6 @@ public interface DataSetConfig {
 
     File getOutputDir();
 
+    ExecutionMode getExecutionMode();
+
 }

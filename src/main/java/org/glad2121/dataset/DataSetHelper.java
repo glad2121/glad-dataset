@@ -1,5 +1,7 @@
 package org.glad2121.dataset;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.sql.Connection;
 
@@ -28,26 +30,34 @@ public class DataSetHelper {
 
     final File outputDir;
 
+    final ExecutionMode executionMode;
+
     public DataSetHelper(Connection connection) {
         this(connection, DataSetConfigFactory.getConfig());
     }
 
     public DataSetHelper(Connection connection, DataSetConfig config) {
-        this.dbAccessor = config.getDbAccessor(connection);
-        this.fileAccessor = config.getFileAccessor();
-        this.asserter = config.getAsserter();
-        this.inputDir = config.getInputDir();
-        this.outputDir = config.getOutputDir();
+        this(config.getDbAccessor(connection),
+                config.getFileAccessor(),
+                config.getAsserter(),
+                config.getInputDir(),
+                config.getOutputDir(),
+                config.getExecutionMode());
     }
 
     public DataSetHelper(
             DbAccessor dbAccessor, FileAccessor fileAccessor,
-            DataSetAsserter asserter, File inputDir, File outputDir) {
+            DataSetAsserter asserter, File inputDir, File outputDir,
+            ExecutionMode executionMode) {
         this.dbAccessor = dbAccessor;
         this.fileAccessor = fileAccessor;
         this.asserter = asserter;
         this.inputDir = inputDir;
         this.outputDir = outputDir;
+        this.executionMode = executionMode;
+        if (logger.isInfoEnabled()) {
+            logger.info("executionMode = {}", executionMode);
+        }
     }
 
     public DbAccessor getDbAccessor() {
@@ -70,6 +80,10 @@ public class DataSetHelper {
         return outputDir;
     }
 
+    public ExecutionMode getExecutionMode() {
+        return executionMode;
+    }
+
     /**
      * 指定されたテーブルを読み込んで、{@link DataSet} を生成します。
      * 
@@ -80,7 +94,19 @@ public class DataSetHelper {
         return getDbAccessor().read(tableNames);
     }
 
+    /**
+     * 指定されたデータで、DB を初期化します。
+     * <P>
+     * 初期データが存在しない場合は、DB の状態に基づいてデータの雛型を生成します。
+     * 
+     * @param resource 初期データのリソース
+     * @param tableNames 初期データが保持するテーブル名
+     */
     public void cleanInsert(Resource resource, String... tableNames) {
+        if (executionMode == ExecutionMode.INIT && tableNames.length > 0) {
+            writeInputFile(resource, tableNames);
+            return;
+        }
         DataSet dataSet = readFile(resource, tableNames);
         getDbAccessor().cleanInsert(dataSet);
     }
@@ -116,12 +142,16 @@ public class DataSetHelper {
     /**
      * 期待値データと DB の状態を比較・検証します。
      * <P>
-     * 期待値データが存在しない場合は、DB の状態に基づいてデータ雛型を生成します。
+     * 期待値データが存在しない場合は、DB の状態に基づいてデータの雛型を生成します。
      * 
      * @param expected 期待値データのリソース
      * @param tableNames 期待値データが保持するテーブル名
      */
     public void assertDb(Resource expected, String... tableNames) {
+        if (executionMode == ExecutionMode.INIT && tableNames.length > 0) {
+            writeInputFile(expected, tableNames);
+            return;
+        }
         DataSet dataSet = readFile(expected, tableNames);
         DataSet actual = readDb(dataSet.getTableNames());
         assertEquals(dataSet, actual);
@@ -152,11 +182,15 @@ public class DataSetHelper {
      */
     public DataSet readFile(Resource resource, String... tableNames) {
         try {
-            return readFile(resource);
-        } catch (ResourceNotFoundException e) {
+            DataSet dataSet = readFile(resource);
             if (tableNames.length > 0) {
+                assertArrayEquals(tableNames, dataSet.getTableNames());
+            }
+            return dataSet;
+        } catch (ResourceNotFoundException e) {
+            if (executionMode != ExecutionMode.TEST && tableNames.length > 0) {
                 try {
-                    writeFile(getInputResource(resource), readDb(tableNames));
+                    writeInputFile(resource, tableNames);
                 } catch (Exception e2) {
                     logger.warn(e2.toString());
                 }
@@ -173,6 +207,10 @@ public class DataSetHelper {
      */
     public void writeFile(Resource resource, DataSet dataSet) {
         getFileAccessor().write(resource, dataSet);
+    }
+
+    void writeInputFile(Resource resource, String... tableNames) {
+        writeFile(getInputResource(resource), readDb(tableNames));
     }
 
     Resource getInputResource(Resource resource) {

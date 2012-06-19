@@ -24,6 +24,12 @@ public class AbstractDataSetConfig implements DataSetConfig {
 
     protected static final String OUTPUT_DIR_KEY = "dataset.outputDir";
 
+    protected static final String EXECUTION_MODE_KEY = "dataset.executionMode";
+
+    static final String DEFAULT_INPUT_DIR = "src/test/data";
+
+    static final String DEFAULT_OUTPUT_DIR = "target/test/data";
+
     final Properties props;
 
     public AbstractDataSetConfig(Properties props) {
@@ -77,7 +83,7 @@ public class AbstractDataSetConfig implements DataSetConfig {
         if (hasProperty(INPUT_DIR_KEY)) {
             return new File(getProperty(INPUT_DIR_KEY));
         } else {
-            return new File("src/test/data");
+            return new File(DEFAULT_INPUT_DIR);
         }
     }
 
@@ -85,8 +91,16 @@ public class AbstractDataSetConfig implements DataSetConfig {
         if (hasProperty(OUTPUT_DIR_KEY)) {
             return new File(getProperty(OUTPUT_DIR_KEY));
         } else {
-            return new File("target/test/data");
+            return new File(DEFAULT_OUTPUT_DIR);
         }
+    }
+
+    public ExecutionMode getExecutionMode() {
+        String prop = getProperty(EXECUTION_MODE_KEY);
+        if (prop == null || prop.length() == 0) {
+            return null;
+        }
+        return ExecutionMode.valueOf(prop.toUpperCase());
     }
 
 }
